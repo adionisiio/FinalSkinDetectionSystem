@@ -12,6 +12,7 @@
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="{{ url_for('static',filename='css/styles.css') }}">
+        
     </head>
 
     <body id="page-top">
@@ -38,19 +39,84 @@
             <div class="container">
                 <div class="masthead-subheading">Welcome to Skin Detection System</div>
                 <div class="masthead-heading text-uppercase">It's Nice To Meet You</div>
-                <a class="btn btn-primary btn-xl text-uppercase" href="#services">Tell Me More</a>
+                <a class="btn btn-primary btn-xl text-uppercase" href="#services">Application Page</a>
             </div>
         </header>
 
-
+        <section class="page-section" id="services">
         <form class="p-3 text-center" action='/', method="post" enctype="multipart/form-data">
             <input class="form-control" type="file" name="imagefile" >
             <input class="btn btn-primary mt-3"type="submit" value="Predict Image" >
+
         </form>
 
-        {% if prediction %}
-        <p class="text-center"> Image is a {{prediction}}</p>
-        {% endif %}
+
+        <style>
+            /* CSS to center the table */
+            table {
+                margin: 0 auto;
+            }
+        </style>
+
+        <style>
+            /* CSS to center the image */
+            .image-container {
+                text-align: center;
+            }
+            .image-container img {
+                display: inline-block;
+            }
+        </style>
+
+        <div class="center-table">
+            {% if file_path %}
+                <h3 class="text-center">Confidence Level: <span style="color: red;">{{ '{:.5f}'.format(confidence) }}%</h3>
+                <h2 class="text-center">Uploaded Image:</h2>
+                <div class="image-container">
+                    <img src="{{ file_path }}" alt="Uploaded Image" width="300">
+                </div>
+            {% endif %}
+
+            {% if prediction %}
+                <h2 class="text-center"> Image is an <span style="color: red;">{{prediction}}</h2>
+                <table>
+                    <tr>
+                        <th>Prescription</th>
+                        <th> </th>
+                        <th>Action</th>
+                    </tr>
+                    {% for item in prescription %}
+                        <tr>
+                            <td>{{ item }}</td>
+                            <td><span style="color: white;">------------------</span></td>
+                            <td><button onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+
+                
+
+
+
+            {% endif %}
+        </div>
+        <br>
+        <br>
+        <br>
+
+        <script>
+            function deleteRow(btn) {
+                var row = btn.parentNode.parentNode;
+                row.parentNode.removeChild(row);
+            }
+        </script>
+
+
+
+    </section>
+
+        
 
 
         <section class="page-section" id="contact">
@@ -82,6 +148,7 @@
                 </div>
             </div>
         </footer>
+
 
     
 
