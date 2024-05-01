@@ -7,18 +7,54 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.applications.resnet50 import preprocess_input
 import numpy as np
 
+
 app = Flask(__name__)
 
 from tensorflow.keras.models import load_model
 
 # Define the absolute path to the model file
-model_path = '/Users/alerieannedionisio/Desktop/DENSENET.h5'
+#PALITAN KUNG NASAAN UNG MODEL TEH
+model_path = 'C:/Users/HP/OneDrive/Desktop/DENSENET.h5'
 
 # Load the model
 model = load_model(model_path)
 
 # Define class labels
 class_labels = ['acne', 'eczema']  # Adjust the class labels as per your model
+
+
+prescriptions = {
+    'acne': [
+        "Benzoyl peroxide",
+        "Tretinoin",
+        "Isotretinoin",
+        "Adapalene",
+        "Clindamycin",
+        "Spironolactone",
+        "Epiduo",
+        "Minocycline",
+        "Tazarotene",
+        "Azelaic acid",
+        "Doxycycline",
+        "Erythromycin",
+        "Salicylic acid",
+        "Clascoterone",
+        "Trimethoprim"
+    ],
+    'eczema': [
+        "Calcineurin inhibitors",
+        "Corticosteroids",
+        "Cyclosporine",
+        "Immunomodulators",
+        "Methotrexate",
+        "Antibiotics (e.g., Azathioprine)",
+        "Janus kinase inhibitor",
+        "Protopic"
+    ]
+}
+
+
+
 
 @app.route('/')
 def index():
@@ -61,16 +97,29 @@ def predict():
         predicted_class = np.argmax(predictions[0])
         confidence_level = np.max(predictions[0])
 
+        # Calculate confidence level as a percentage
+        confidence_level = np.max(predictions[0]) * 100
+
         # Map predicted class to disease name
         if confidence_level >= 0.85:
             if predicted_class == 0:
                 prediction = "Acne"
+                prescription = prescriptions['acne']
             elif predicted_class == 1:
                 prediction = "Eczema"
+                prescription = prescriptions['eczema']
         else:
             prediction = "Undetermined"
+            prescription = []
 
-        return render_template('index.html', prediction=prediction)
+        return render_template('index.html', prediction=prediction, prescription=prescription, file_path=file_path, confidence=confidence_level)
+       
+
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
